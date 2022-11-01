@@ -3,22 +3,27 @@
     "typeshedPath": ".",
     "include": [
         "stdlib",
-        "stubs",
-        "test_cases"
+        "stubs"
     ],
     "exclude": [
-        "**/@python2",
         "stdlib/distutils/command",
         "stdlib/lib2to3/refactor.pyi",
         "stdlib/multiprocessing/reduction.pyi",
         "stdlib/sqlite3/dbapi2.pyi",
         "stdlib/_tkinter.pyi",
-        "stdlib/tkinter",
+        "stdlib/tkinter/__init__.pyi",
+        "stdlib/tkinter/filedialog.pyi",
+        "stdlib/tkinter/messagebox.pyi",
+        "stdlib/tkinter/tix.pyi",
+        "stdlib/tkinter/ttk.pyi",
         "stdlib/xml/dom/NodeFilter.pyi",
         "stdlib/xml/dom/expatbuilder.pyi",
         "stdlib/xml/dom/minidom.pyi",
         "stdlib/xml/dom/pulldom.pyi",
         "stdlib/xml/sax",
+        "stubs/aiofiles/aiofiles/tempfile/temptypes.pyi",
+        "stubs/aiofiles/aiofiles/threadpool/utils.pyi",
+        "stubs/annoy/annoy/annoylib.pyi",
         "stubs/aws-xray-sdk",
         "stubs/babel",
         "stubs/backports.ssl_match_hostname",
@@ -27,6 +32,7 @@
         "stubs/beautifulsoup4",
         "stubs/braintree",
         "stubs/caldav",
+        "stubs/cffi",
         "stubs/commonmark",
         "stubs/cryptography",
         "stubs/dateparser",
@@ -41,17 +47,16 @@
         "stubs/jsonschema",
         "stubs/ldap3",
         "stubs/Markdown",
-        "stubs/mock",
         "stubs/mysqlclient",
         "stubs/oauthlib",
         "stubs/openpyxl",
         "stubs/Pillow",
-        "stubs/paramiko",
         "stubs/prettytable",
         "stubs/protobuf",
+        "stubs/python-crontab",
         "stubs/google-cloud-ndb",
         "stubs/passlib",
-        "stubs/pep8-naming",
+        "stubs/peewee",
         "stubs/psutil",
         "stubs/psycopg2",
         "stubs/pyflakes",
@@ -59,17 +64,16 @@
         "stubs/PyMySQL",
         "stubs/python-dateutil",
         "stubs/python-jose",
-        "stubs/pyvmomi",
+        "stubs/pywin32",
         "stubs/PyYAML",
         "stubs/redis",
         "stubs/requests",
-        "stubs/selenium",
         "stubs/Send2Trash",
         "stubs/setuptools",
-        "stubs/simplejson",
         "stubs/slumber",
         "stubs/SQLAlchemy",
         "stubs/stripe",
+        "stubs/tqdm",
         "stubs/ttkthemes",
         "stubs/urllib3",
         "stubs/vobject"
@@ -78,8 +82,10 @@
     "strictListInference": true,
     "strictDictionaryInference": true,
     "strictParameterNoneValue": true,
+    "strictSetInference": true,
     "reportFunctionMemberAccess": "error",
     "reportMissingModuleSource": "none",
+    "reportMissingParameterType": "error",
     "reportMissingTypeStubs": "error",
     "reportUnusedImport": "error",
     "reportUnusedClass": "error",
@@ -109,16 +115,19 @@
     "reportUnboundVariable": "error",
     "reportInvalidStubStatement": "error",
     "reportInvalidTypeVarUse": "error",
-    "reportPropertyTypeMismatch": "error",
-    "reportSelfClsParameterName": "error",
     "reportUnsupportedDunderAll": "error",
-    // Incompatible overrides are out of typeshed's control as they are
-    // inherited from the implementation.
+    "reportInconsistentConstructor": "error",
+    "reportTypeCommentUsage": "error",
+    "reportUnnecessaryComparison": "error",
+    // Incompatible overrides and property type mismatches are out of typeshed's control
+    // as they are inherited from the implementation.
     "reportIncompatibleMethodOverride": "none",
     "reportIncompatibleVariableOverride": "none",
-    // Overlapping overloads cannot be enabled at this time because
-    // of the "fractions.Fraction.__pow__" method and "tasks.gather" function.
-    // Mypy's overlapping overload logic misses these issues (see mypy
-    // issue #10143 and #10157).
+    "reportPropertyTypeMismatch": "none",
+    // Overlapping overloads are often necessary in a stub, meaning pyright's check
+    // (which is stricter than mypy's; see mypy issue #10143 and #10157)
+    // would cause many false positives and catch few bugs.
     "reportOverlappingOverload": "none",
+    // The name of the self/cls parameter is out of typeshed's control.
+    "reportSelfClsParameterName": "none",
 }

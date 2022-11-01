@@ -3,7 +3,7 @@ import sys
 from _typeshed import Self, StrPath
 from collections.abc import AsyncIterator, Awaitable, Callable, Iterable, Sequence
 from typing import Any
-from typing_extensions import TypeAlias
+from typing_extensions import SupportsIndex, TypeAlias
 
 from . import events, protocols, transports
 from .base_events import Server
@@ -11,7 +11,7 @@ from .base_events import Server
 if sys.platform == "win32":
     if sys.version_info >= (3, 8):
         __all__ = ("StreamReader", "StreamWriter", "StreamReaderProtocol", "open_connection", "start_server")
-    elif sys.version_info >= (3, 7):
+    else:
         __all__ = (
             "StreamReader",
             "StreamWriter",
@@ -21,16 +21,6 @@ if sys.platform == "win32":
             "IncompleteReadError",
             "LimitOverrunError",
         )
-    else:
-        __all__ = [
-            "StreamReader",
-            "StreamWriter",
-            "StreamReaderProtocol",
-            "open_connection",
-            "start_server",
-            "IncompleteReadError",
-            "LimitOverrunError",
-        ]
 else:
     if sys.version_info >= (3, 8):
         __all__ = (
@@ -42,7 +32,7 @@ else:
             "open_unix_connection",
             "start_unix_server",
         )
-    elif sys.version_info >= (3, 7):
+    else:
         __all__ = (
             "StreamReader",
             "StreamWriter",
@@ -54,18 +44,6 @@ else:
             "open_unix_connection",
             "start_unix_server",
         )
-    else:
-        __all__ = [
-            "StreamReader",
-            "StreamWriter",
-            "StreamReaderProtocol",
-            "open_connection",
-            "start_server",
-            "IncompleteReadError",
-            "LimitOverrunError",
-            "open_unix_connection",
-            "start_unix_server",
-        ]
 
 _ClientConnectedCallback: TypeAlias = Callable[[StreamReader, StreamWriter], Awaitable[None] | None]
 
@@ -120,24 +98,20 @@ else:
     ) -> Server: ...
 
 if sys.platform != "win32":
-    if sys.version_info >= (3, 7):
-        _PathType: TypeAlias = StrPath
-    else:
-        _PathType: TypeAlias = str
     if sys.version_info >= (3, 10):
         async def open_unix_connection(
-            path: _PathType | None = ..., *, limit: int = ..., **kwds: Any
+            path: StrPath | None = ..., *, limit: int = ..., **kwds: Any
         ) -> tuple[StreamReader, StreamWriter]: ...
         async def start_unix_server(
-            client_connected_cb: _ClientConnectedCallback, path: _PathType | None = ..., *, limit: int = ..., **kwds: Any
+            client_connected_cb: _ClientConnectedCallback, path: StrPath | None = ..., *, limit: int = ..., **kwds: Any
         ) -> Server: ...
     else:
         async def open_unix_connection(
-            path: _PathType | None = ..., *, loop: events.AbstractEventLoop | None = ..., limit: int = ..., **kwds: Any
+            path: StrPath | None = ..., *, loop: events.AbstractEventLoop | None = ..., limit: int = ..., **kwds: Any
         ) -> tuple[StreamReader, StreamWriter]: ...
         async def start_unix_server(
             client_connected_cb: _ClientConnectedCallback,
-            path: _PathType | None = ...,
+            path: StrPath | None = ...,
             *,
             loop: events.AbstractEventLoop | None = ...,
             limit: int = ...,
@@ -154,10 +128,6 @@ class StreamReaderProtocol(FlowControlMixin, protocols.Protocol):
         client_connected_cb: _ClientConnectedCallback | None = ...,
         loop: events.AbstractEventLoop | None = ...,
     ) -> None: ...
-    def connection_made(self, transport: transports.BaseTransport) -> None: ...
-    def connection_lost(self, exc: Exception | None) -> None: ...
-    def data_received(self, data: bytes) -> None: ...
-    def eof_received(self) -> bool: ...
 
 class StreamWriter:
     def __init__(
@@ -169,15 +139,13 @@ class StreamWriter:
     ) -> None: ...
     @property
     def transport(self) -> transports.WriteTransport: ...
-    def write(self, data: bytes) -> None: ...
-    def writelines(self, data: Iterable[bytes]) -> None: ...
+    def write(self, data: bytes | bytearray | memoryview) -> None: ...
+    def writelines(self, data: Iterable[bytes | bytearray | memoryview]) -> None: ...
     def write_eof(self) -> None: ...
     def can_write_eof(self) -> bool: ...
     def close(self) -> None: ...
-    if sys.version_info >= (3, 7):
-        def is_closing(self) -> bool: ...
-        async def wait_closed(self) -> None: ...
-
+    def is_closing(self) -> bool: ...
+    async def wait_closed(self) -> None: ...
     def get_extra_info(self, name: str, default: Any = ...) -> Any: ...
     async def drain(self) -> None: ...
     if sys.version_info >= (3, 11):
@@ -192,9 +160,10 @@ class StreamReader(AsyncIterator[bytes]):
     def set_transport(self, transport: transports.BaseTransport) -> None: ...
     def feed_eof(self) -> None: ...
     def at_eof(self) -> bool: ...
-    def feed_data(self, data: bytes) -> None: ...
+    def feed_data(self, data: Iterable[SupportsIndex]) -> None: ...
     async def readline(self) -> bytes: ...
-    async def readuntil(self, separator: bytes = ...) -> bytes: ...
+    # Can be any buffer that supports len(); consider changing to a Protocol if PEP 688 is accepted
+    async def readuntil(self, separator: bytes | bytearray | memoryview = ...) -> bytes: ...
     async def read(self, n: int = ...) -> bytes: ...
     async def readexactly(self, n: int) -> bytes: ...
     def __aiter__(self: Self) -> Self: ...

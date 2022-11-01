@@ -3,7 +3,7 @@
 
 stubtest is a script in the mypy project that compares stubs to the actual objects at runtime.
 Note that therefore the output of stubtest depends on which Python version it is run with.
-In typeshed CI, we run stubtest with each currently supported Python minor version, except 2.7.
+In typeshed CI, we run stubtest with each currently supported Python minor version.
 
 """
 
@@ -38,15 +38,15 @@ def run_stubtest(typeshed_dir: Path) -> int:
         # As discussed in https://github.com/python/typeshed/issues/3693, we only aim for
         # positional-only arg accuracy for the latest Python version.
         cmd += ["--ignore-positional-only"]
+    print(" ".join(cmd), file=sys.stderr)
     try:
-        print(" ".join(cmd), file=sys.stderr)
         subprocess.run(cmd, check=True)
     except subprocess.CalledProcessError as e:
         print(
             "\nNB: stubtest output depends on the Python version (and system) it is run with. "
             "See README.md for more details.\n"
             "NB: We only check positional-only arg accuracy for Python 3.10.\n"
-            "\nCommand run was: {}\n".format(" ".join(cmd)),
+            f"\nCommand run was: {' '.join(cmd)}\n",
             file=sys.stderr,
         )
         print("\n\n", file=sys.stderr)

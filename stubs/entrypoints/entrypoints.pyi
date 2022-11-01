@@ -7,7 +7,7 @@ from typing import Any
 if sys.version_info >= (3, 8):
     from re import Pattern
 else:
-    from typing import Pattern
+    from re import Pattern
 
 entry_point_pattern: Pattern[str]
 file_in_zip_pattern: Pattern[str]
@@ -22,6 +22,8 @@ class NoSuchEntryPoint(Exception):
     group: str
     name: str
     def __init__(self, group: str, name: str) -> None: ...
+
+class CaseSensitiveConfigParser(ConfigParser): ...
 
 class EntryPoint:
     name: str
@@ -40,6 +42,8 @@ class Distribution:
     name: str
     version: str
     def __init__(self, name: str, version: str) -> None: ...
+    @classmethod
+    def from_name_version(cls: type[Self], name: str) -> Self: ...
 
 def iter_files_distros(
     path: Sequence[str] | None = ..., repeated_distro: str = ...

@@ -1,18 +1,18 @@
 import io
 from _typeshed import Self
-from collections.abc import Iterator, Mapping
+from collections.abc import Iterable, Iterator, Mapping
 from http.client import HTTPMessage as _HttplibHTTPMessage, HTTPResponse as _HttplibHTTPResponse
-from typing import Any
-from typing_extensions import Literal
+from typing import IO, Any
+from typing_extensions import Literal, TypeAlias
 
 from urllib3.connectionpool import HTTPConnection
 
 from . import HTTPConnectionPool, Retry
 from ._collections import HTTPHeaderDict
-from .connection import _TYPE_BODY
+
+_TYPE_BODY: TypeAlias = bytes | IO[Any] | Iterable[bytes] | str
 
 class DeflateDecoder:
-    def __init__(self) -> None: ...
     def __getattr__(self, name: str) -> Any: ...
     def decompress(self, data: bytes) -> bytes: ...
 
@@ -22,14 +22,12 @@ class GzipDecoderState:
     SWALLOW_DATA: Literal[2]
 
 class GzipDecoder:
-    def __init__(self) -> None: ...
     def __getattr__(self, name: str) -> Any: ...
     def decompress(self, data: bytes) -> bytes: ...
 
 # This class is only available if
 # `brotli` is available for import.
 class BrotliDecoder:
-    def __init__(self) -> None: ...
     def flush(self) -> bytes: ...
 
 class MultiDecoder:
@@ -98,4 +96,4 @@ class HTTPResponse(io.IOBase):
     def readinto(self, b: bytearray) -> int: ...
     def supports_chunked_reads(self) -> bool: ...
     def read_chunked(self, amt: int | None = ..., decode_content: bool | None = ...) -> Iterator[bytes]: ...
-    def geturl(self) -> bool | str: ...
+    def geturl(self) -> str | None: ...

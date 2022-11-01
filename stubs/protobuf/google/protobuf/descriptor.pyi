@@ -45,27 +45,6 @@ class _NestedDescriptorBase(DescriptorBase):
     def CopyToProto(self, proto): ...
 
 class Descriptor(_NestedDescriptorBase):
-    def __new__(
-        cls,
-        name=...,
-        full_name=...,
-        filename=...,
-        containing_type=...,
-        fields=...,
-        nested_types=...,
-        enum_types=...,
-        extensions=...,
-        options=...,
-        serialized_options=...,
-        is_extendable=...,
-        extension_ranges=...,
-        oneofs=...,
-        file=...,
-        serialized_start=...,
-        serialized_end=...,
-        syntax=...,
-        create_key=...,
-    ): ...
     fields: Any
     fields_by_number: Any
     fields_by_name: Any
@@ -83,25 +62,25 @@ class Descriptor(_NestedDescriptorBase):
     syntax: Any
     def __init__(
         self,
-        name,
-        full_name,
-        filename,
-        containing_type,
-        fields,
-        nested_types,
-        enum_types,
-        extensions,
-        options=...,
-        serialized_options=...,
-        is_extendable=...,
-        extension_ranges=...,
-        oneofs=...,
-        file=...,
-        serialized_start=...,
-        serialized_end=...,
-        syntax=...,
-        create_key=...,
-    ) -> None: ...
+        name: str,
+        full_name: str,
+        filename: Any,
+        containing_type: Descriptor | None,
+        fields: list[FieldDescriptor],
+        nested_types: list[FieldDescriptor],
+        enum_types: list[EnumDescriptor],
+        extensions: list[FieldDescriptor],
+        options: Any | None = ...,
+        serialized_options: Any | None = ...,
+        is_extendable: bool | None = ...,
+        extension_ranges: Any | None = ...,
+        oneofs: list[OneofDescriptor] | None = ...,
+        file: FileDescriptor | None = ...,
+        serialized_start: Any | None = ...,
+        serialized_end: Any | None = ...,
+        syntax: str | None = ...,
+        create_key: Any | None = ...,
+    ): ...
     def EnumValueName(self, enum, value): ...
     def CopyToProto(self, proto): ...
     def GetOptions(self) -> MessageOptions: ...
@@ -266,35 +245,22 @@ class OneofDescriptor:
     def GetOptions(self) -> OneofOptions: ...
 
 class ServiceDescriptor(_NestedDescriptorBase):
-    def __new__(
-        cls,
-        name=...,
-        full_name=...,
-        index=...,
-        methods=...,
-        options=...,
-        serialized_options=...,
-        file=...,
-        serialized_start=...,
-        serialized_end=...,
-        create_key=...,
-    ): ...
     index: Any
     methods: Any
     methods_by_name: Any
     def __init__(
         self,
-        name,
-        full_name,
-        index,
-        methods,
-        options=...,
-        serialized_options=...,
-        file=...,
-        serialized_start=...,
-        serialized_end=...,
-        create_key=...,
-    ) -> None: ...
+        name: str,
+        full_name: str,
+        index: int,
+        methods: list[MethodDescriptor],
+        options: ServiceOptions | None = ...,
+        serialized_options: Any | None = ...,
+        file: FileDescriptor | None = ...,
+        serialized_start: Any | None = ...,
+        serialized_end: Any | None = ...,
+        create_key: Any | None = ...,
+    ): ...
     def FindMethodByName(self, name): ...
     def CopyToProto(self, proto): ...
     def GetOptions(self) -> ServiceOptions: ...
@@ -308,6 +274,8 @@ class MethodDescriptor(DescriptorBase):
         containing_service,
         input_type,
         output_type,
+        client_streaming=...,
+        server_streaming=...,
         options=...,
         serialized_options=...,
         create_key=...,
@@ -318,6 +286,8 @@ class MethodDescriptor(DescriptorBase):
     containing_service: Any
     input_type: Any
     output_type: Any
+    client_streaming: bool
+    server_streaming: bool
     def __init__(
         self,
         name,
@@ -326,6 +296,8 @@ class MethodDescriptor(DescriptorBase):
         containing_service,
         input_type,
         output_type,
+        client_streaming=...,
+        server_streaming=...,
         options=...,
         serialized_options=...,
         create_key=...,

@@ -1,5 +1,8 @@
+from _typeshed import Incomplete, SupportsItems
 from abc import ABC
-from typing import Any
+from re import Pattern
+from typing import Any, ClassVar
+from typing_extensions import Literal
 
 def clear_empty_fields(d): ...
 def create_dictionary_string(
@@ -24,9 +27,11 @@ class PDFObject:
     def ref(self): ...
     def serialize(self, fpdf: Any | None = ..., obj_dict: Any | None = ...): ...
 
-def camel_case(property_name): ...
+def build_obj_dict(key_values: SupportsItems[str, Incomplete]) -> dict[str, str]: ...
+def camel_case(snake_case: str) -> str: ...
 
 class PDFString(str):
+    USE_HEX_ENCODING: ClassVar[bool]
     def serialize(self): ...
 
 class PDFArray(list[Any]):
@@ -36,10 +41,18 @@ class Destination(ABC):
     def as_str(self, pdf: Any | None = ...) -> None: ...
 
 class DestinationXYZ(Destination):
-    page: Any
-    x: Any
-    y: Any
-    zoom: Any
-    page_as_obj_id: Any
-    def __init__(self, page, x: int = ..., y: int = ..., zoom: str = ..., page_as_obj_id: bool = ...) -> None: ...
+    page: int
+    x: float
+    y: float
+    zoom: float | Literal["null"]
+    page_as_obj_id: bool
+    def __init__(
+        self, page: int, x: float = ..., y: float = ..., zoom: float | Literal["null"] = ..., page_as_obj_id: bool = ...
+    ) -> None: ...
     def as_str(self, pdf: Any | None = ...): ...
+
+class Raw(str): ...
+
+class Name(str):
+    NAME_ESC: ClassVar[Pattern[bytes]]
+    def pdf_repr(self) -> str: ...

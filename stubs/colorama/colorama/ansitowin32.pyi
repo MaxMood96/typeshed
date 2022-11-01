@@ -1,8 +1,9 @@
 import sys
 from _typeshed import SupportsWrite
 from collections.abc import Callable, Sequence
+from re import Pattern
 from types import TracebackType
-from typing import Any, Pattern, TextIO
+from typing import Any, TextIO
 from typing_extensions import TypeAlias
 
 if sys.platform == "win32":
@@ -48,3 +49,4 @@ class AnsiToWin32:
     def extract_params(self, command: str, paramstring: str) -> tuple[int, ...]: ...
     def call_win32(self, command: str, params: Sequence[int]) -> None: ...
     def convert_osc(self, text: str) -> str: ...
+    def flush(self) -> None: ...
